@@ -2,13 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>Privacy - Location When In Use Usage Description
-Privacy - Location When In Use Usage Description
-Privacy - Location When In Use Usage Description
-Privacy - Location When In Use Usage Description
-Privacy - location When In Use Usage Description</key>
-	<string>We use your location to show nearby plants in Ness Gardens.
-We use your location to show nearby plants in Ness Gardens.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs your location to centre the map and sort beds by distance.
+</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
