@@ -14,36 +14,73 @@ class NetworkManager {
 
     private let baseURL = "https://cgi.csc.liv.ac.uk/~phil/Teaching/COMP228/ness/data.php"
 
+    // beds data
     func fetchBeds(completion: @escaping ([Bed]) -> Void) {
         guard let url = URL(string: "\(baseURL)?class=beds") else { return }
-        
-        URLSession.shared.dataTask(with: url) { data, _, _ in
-            guard let data = data else { return }
-            let beds = try? JSONDecoder().decode([Bed].self, from: data)
-            completion(beds ?? [])
-        }.resume()
-    }
 
-    func fetchPlants(completion: @escaping ([Plant]) -> Void) {
-        guard let url = URL(string: "\(baseURL)?class=plants") else { return }
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            guard let data = data else {
+                print("No beds data:", error ?? "unknown error")
+                completion([])
+                return
+            }
 
-        URLSession.shared.dataTask(with: url) { data, _, _ in
-            guard let data = data else { return }
-            let plants = try? JSONDecoder().decode([Plant].self, from: data)
-            completion(plants ?? [])
-        }.resume()
-    }
-
-    func fetchImages(completion: @escaping ([ImageInfo]) -> Void) {
-        guard let url = URL(string: "\(baseURL)?class=images") else { return }
-
-        URLSession.shared.dataTask(with: url) { data, _, _ in
-            guard let data = data else { return }
-            let imgs = try? JSONDecoder().decode([ImageInfo].self, from: data)
-            completion(imgs ?? [])
+            do {
+                struct Root: Codable { let beds: [Bed] }
+                let root = try JSONDecoder().decode(Root.self, from: data)
+                completion(root.beds)
+            } catch {
+                print("Beds decode error:", error)
+                completion([])
+            }
         }.resume()
     }
     
+    // plants data
+    func fetchPlants(completion: @escaping ([Plant]) -> Void) {
+        guard let url = URL(string: "\(baseURL)?class=plants") else { return }
+
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            guard let data = data else {
+                print("No plants data:", error ?? "unknown error")
+                completion([])
+                return
+            }
+
+            do {
+                struct Root: Codable { let plants: [Plant] }
+                let decoded = try JSONDecoder().decode(Root.self, from: data)
+                completion(decoded.plants)
+            } catch {
+                print("Plants decode error:", error)
+                completion([])
+            }
+        }.resume()
+    }
+    
+    // images list
+    func fetchImages(completion: @escaping ([ImageInfo]) -> Void) {
+        guard let url = URL(string: "\(baseURL)?class=images") else { return }
+
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            guard let data = data else {
+                print("No images data:", error ?? "unknown error")
+                completion([])
+                return
+            }
+
+            do {
+                struct Root: Codable { let images: [ImageInfo] }
+                let decoded = try JSONDecoder().decode(Root.self, from: data)
+                completion(decoded.images)
+            } catch {
+                print("Images decode error:", error)
+                completion([])
+            }
+        }.resume()
+    }
+    
+    // trails meta
     func fetchTrails(completion: @escaping ([Trail]) -> Void) {
         guard let url = URL(string: "\(baseURL)?class=trails") else { return }
 
@@ -56,7 +93,7 @@ class NetworkManager {
         }.resume()
     }
 
-
+    // each trail's coordinates
     func fetchTrailLocations(completion: @escaping ([TrailLocation]) -> Void) {
         guard let url = URL(string: "\(baseURL)?class=trail_locations") else { return }
 

@@ -8,13 +8,12 @@
 import Foundation
 import CoreLocation
 
-
 struct Bed: Codable {
-    let recnum: String
-    let short_name: String
-    let full_name: String
+    let bed_id: String
+    let name: String
     let latitude: String
     let longitude: String
+    let last_modified: String
 
     var coordinate: CLLocationCoordinate2D? {
         guard let lat = Double(latitude),
@@ -22,7 +21,6 @@ struct Bed: Codable {
         return CLLocationCoordinate2D(latitude: lat, longitude: lon)
     }
 }
-
 
 struct Plant: Codable {
     let recnum: String
@@ -37,13 +35,17 @@ struct Plant: Codable {
     let longitude: String?
 }
 
-
 struct ImageInfo: Codable {
-    let recnum: String
-    let plant_recnum: String
+    let recnum: String 
+    let imgid: String
     let filename: String
-}
 
+    enum CodingKeys: String, CodingKey {
+        case recnum
+        case imgid
+        case filename = "img_file_name"
+    }
+}
 
 struct Trail: Codable {
     let id: String
@@ -66,8 +68,6 @@ struct Trail: Codable {
         case active = "Active"
     }
 }
-
-
 
 struct TrailLocation: Codable {
     let id: String

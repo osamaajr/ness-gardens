@@ -19,11 +19,13 @@ class PlantDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // load all UI data
         loadPlantDetails()
     }
 
     func loadPlantDetails() {
 
+        // return nothing if theres no plant
         guard let plant = plant else { return }
 
         var info = ""
@@ -35,6 +37,7 @@ class PlantDetailViewController: UIViewController {
 
         infoTextView.text = info
 
+        // Load first plant image
         if let first = images.first {
             let urlStr = "https://cgi.csc.liv.ac.uk/~phil/Teaching/COMP228/ness_images/\(first.filename)"
             if let url = URL(string: urlStr) {
@@ -49,6 +52,7 @@ class PlantDetailViewController: UIViewController {
             }
         }
 
+        // Show map if coordinates available
         if let latStr = plant.latitude,
            let lonStr = plant.longitude,
            let lat = Double(latStr),
@@ -56,6 +60,7 @@ class PlantDetailViewController: UIViewController {
 
             let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
 
+            // zoom out enough to show general origin
             let region = MKCoordinateRegion(
                 center: coordinate,
                 latitudinalMeters: 50000,
@@ -64,13 +69,14 @@ class PlantDetailViewController: UIViewController {
 
             originMapView.setRegion(region, animated: false)
 
-            // Add pin
+            // add pin
             let pin = MKPointAnnotation()
             pin.coordinate = coordinate
             pin.title = "Plant Origin"
             originMapView.addAnnotation(pin)
 
         } else {
+            // hide map if no coords
             originMapView.isHidden = true
         }
     }
